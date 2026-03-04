@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { CheckCircle, CalendarDays } from "lucide-react";
+import { CheckCircle, CalendarDays, Stethoscope, MapPin } from "lucide-react";
 import { services } from "@/lib/services-data";
 
 const schema = z.object({
@@ -22,6 +22,7 @@ const schema = z.object({
   date: z.string().min(1, "Select a date"),
   time: z.string().min(1, "Select a time"),
   address: z.string().trim().min(5, "Address is required").max(500),
+  google_maps_link: z.string().trim().min(5, "Google Maps location link is required").max(500),
   problem: z.string().trim().max(1000).optional(),
 });
 
@@ -41,7 +42,7 @@ const Appointment = () => {
     resolver: zodResolver(schema),
     defaultValues: {
       patient_name: "", phone: "", email: "", service: "",
-      date: "", time: "", address: "", problem: "",
+      date: "", time: "", address: "", google_maps_link: "", problem: "",
     },
   });
 
@@ -55,6 +56,7 @@ const Appointment = () => {
       date: data.date,
       time: data.time,
       address: data.address,
+      google_maps_link: data.google_maps_link,
       problem: data.problem || null,
     });
     setLoading(false);
@@ -88,6 +90,32 @@ const Appointment = () => {
 
   return (
     <Layout>
+      {/* Pricing Section */}
+      <section className="bg-accent/30 py-12 md:py-16">
+        <div className="container mx-auto px-4">
+          <h2 className="font-serif text-3xl md:text-4xl font-bold text-center mb-8">Transparent Pricing</h2>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="max-w-lg mx-auto bg-card rounded-2xl p-8 shadow-card border border-primary/10"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <Stethoscope className="h-7 w-7 text-primary" />
+              <h3 className="font-serif text-xl font-semibold">Basic Home Visit Fee</h3>
+            </div>
+            <p className="text-4xl md:text-5xl font-bold text-primary mb-6">₹499</p>
+            <ul className="space-y-3 text-muted-foreground mb-6">
+              <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-primary shrink-0" /> No advance payment required</li>
+              <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-primary shrink-0" /> Pay directly to the doctor after service</li>
+              <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-primary shrink-0" /> Cash and UPI accepted</li>
+            </ul>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              "Additional charges (if any) will be informed by the assigned doctor before treatment. We believe in complete transparency."
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
       <section className="bg-gradient-hero py-16">
         <div className="container mx-auto px-4 text-center">
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-primary-foreground mb-4">Book an Appointment</h1>
@@ -183,6 +211,15 @@ const Appointment = () => {
                   <FormItem>
                     <FormLabel>Address</FormLabel>
                     <FormControl><Textarea placeholder="Your full address for the home visit" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+
+                <FormField control={form.control} name="google_maps_link" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-1.5"><MapPin className="h-4 w-4" /> Share Your Google Maps Location</FormLabel>
+                    <FormControl><Input placeholder="Paste your Google Maps location link here" {...field} /></FormControl>
+                    <p className="text-xs text-muted-foreground">Open Google Maps, tap on your location, click Share, and paste the link here.</p>
                     <FormMessage />
                   </FormItem>
                 )} />

@@ -21,6 +21,7 @@ export type Database = {
           created_at: string
           date: string
           email: string
+          google_maps_link: string
           id: string
           patient_name: string
           phone: string
@@ -35,6 +36,7 @@ export type Database = {
           created_at?: string
           date: string
           email: string
+          google_maps_link?: string
           id?: string
           patient_name: string
           phone: string
@@ -49,6 +51,7 @@ export type Database = {
           created_at?: string
           date?: string
           email?: string
+          google_maps_link?: string
           id?: string
           patient_name?: string
           phone?: string
